@@ -5,7 +5,7 @@ Repository:Address Book
 */
 
 Set up
-Change the base url by navigating through config/appConfig.php # I have setup with http://localhost/address-book
+Change the base url by navigating through config/appConfig.php # I have setup with http://localhost/address_book
 
 Add your all required database setting in the same file.
 

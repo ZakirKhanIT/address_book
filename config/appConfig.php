@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -9,7 +8,7 @@ $configs = [
     'path' => [
         'PATH_APPLICATION' => __DIR__ . '/../application/',
         'PATH_VIEWS' => __DIR__ . '/../application/Views/',
-        'PATH_ADDRESS' => 'http://localhost/address-book',
+        'PATH_ADDRESS' => 'http://localhost/address_book',
     ],
 
     'address' => [

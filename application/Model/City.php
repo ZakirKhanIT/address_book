@@ -16,7 +16,9 @@ class City extends Model
     public function getAllCity()
     {
         $sql = 'SELECT * FROM city';
-        return $statement = $this->db->query($sql);
+        $statement = $this->db->prepare($sql);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
     
 }

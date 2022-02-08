@@ -1,7 +1,7 @@
 <?php
 
 namespace Util;
-use mysqli;
+use \PDO;
 
 class Database
 {
@@ -9,16 +9,21 @@ class Database
     
     public function __construct()
     {
-        $this->connection =  new mysqli(DB_HOST, DB_USER ,DB_PASSWORD ,DB_NAME);
-
-        if ($this->connection->connect_errno) {
-            if( $this->connection -> connect_error == "Unknown database '".DB_NAME."'"){
+        try 
+        {
+            $dns = DB_TYPE . ':host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';char-set='. DB_CHAR_SET; 
+            $this->connection = new PDO($dns, DB_USER, DB_PASSWORD);
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        }
+        catch (\PDOException $err) {
+            if( 1049 === $err->getCode()){
                 include_once PATH_VIEWS . 'errors/set_up_error.php';
                 $error_type = 'dnf';
            }
-            exit();
-        }
-        $this->setup();
+            exit;
+         }
+
+         $this->setup();
 
     }
     
@@ -30,15 +35,12 @@ class Database
     public function getAllTables()
     {
         $sql = 'SHOW TABLES IN '.DB_NAME.'';
-        if ($this
-            ->connection
-            ->query($sql))
-        {
-            return $this
-                ->connection
-                ->query($sql)->fetch_all(MYSQLI_ASSOC);
+        $statement = $this->connection->prepare($sql);
+        if( $statement->execute() ){
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
         }
         return;
+
     }
 
     public function setUp()

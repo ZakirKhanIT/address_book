@@ -62,7 +62,7 @@ class ContactController
             $this
                 ->view
                 ->render('contact/add');
-                return;
+            return;
         }
 
         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
@@ -83,13 +83,13 @@ class ContactController
                 $this
                     ->view
                     ->redirect(PATH_ADDRESS);
-                    return;
+                return;
             }
         }
 
         $this
-        ->view
-        ->redirect($_SERVER['REQUEST_URI']);
+            ->view
+            ->redirect($_SERVER['REQUEST_URI']);
     }
 
     public function view($id)
@@ -142,7 +142,7 @@ class ContactController
             $this
                 ->view
                 ->render('contact/edit');
-                return;
+            return;
         }
 
         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
@@ -164,13 +164,13 @@ class ContactController
                 $this
                     ->view
                     ->redirect(PATH_ADDRESS);
-                    return;
+                return;
             }
         }
 
-            $this
-                    ->view
-                    ->redirect($_SERVER['REQUEST_URI']);
+        $this
+            ->view
+            ->redirect($_SERVER['REQUEST_URI']);
     }
 
     public function delete($id)
@@ -184,14 +184,14 @@ class ContactController
                 $this
                     ->view
                     ->redirect(PATH_ADDRESS);
-                    return;
+                return;
             }
-        
+
         }
 
         $this
-                    ->view
-                    ->redirect($_SERVER['REQUEST_URI']);
+            ->view
+            ->redirect($_SERVER['REQUEST_URI']);
     }
 
     public function exportInJson()
@@ -200,11 +200,11 @@ class ContactController
             ->model
             ->getAllContacts();
 
-            $data = json_encode($data);
+        $data = json_encode($data);
 
-            file_put_contents("./assets/files/all_contacts_" . time() . ".json", $data);
+        file_put_contents("./assets/files/all_contacts_" . time() . ".json", $data);
 
-            exportData( './assets/files/all_contacts_' . time() . '.json', 'json' );
+        exportData('./assets/files/all_contacts_' . time() . '.json', 'json');
 
     }
 
@@ -217,8 +217,7 @@ class ContactController
         $xml = arrayToXml($data, $root_node = 'address_book', $child_node = 'contact_info');
 
         $all_contacts_xml = 'all_contacts_xml_' . time() . '.xml';
-        $xml->save('./assets/files/'.$all_contacts_xml);
-        exportData( './assets/files/'.$all_contacts_xml, 'xml' );
+        $xml->save('./assets/files/' . $all_contacts_xml);
+        exportData('./assets/files/' . $all_contacts_xml, 'xml');
     }
 }
-
