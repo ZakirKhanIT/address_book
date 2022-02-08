@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<address_book>
+  <contact_info>
+    <id>13</id>
+    <first_name>zakir khan5</first_name>
+    <last_name>dfsgs</last_name>
+    <zip_code>1234</zip_code>
+    <street>ghgfh</street>
+    <city_id>1</city_id>
+    <email_address>ghgfdh@gmail.com</email_address>
+    <created_date>2022-02-08 17:59:42</created_date>
+    <updated_date>2022-02-08 17:59:42</updated_date>
+    <name>Mumbai</name>
+  </contact_info>
+  <contact_info>
+    <id>15</id>
+    <first_name>fghd</first_name>
+    <last_name>dfsgs</last_name>
+    <zip_code>ghdgrtw</zip_code>
+    <street>ghgfh</street>
+    <city_id>1</city_id>
+    <email_address>ghgfdh@gmail.com</email_address>
+    <created_date>2022-02-08 18:15:14</created_date>
+    <updated_date>2022-02-08 18:15:14</updated_date>
+    <name>Mumbai</name>
+  </contact_info>
+</address_book>
