@@ -1,6 +1,6 @@
 
         <!--Begin nav-->
-        <nav style="background-color:#2A5D84;margin-bottom:50px;">
+        <nav class="breadcrumb">
             <div class="container">
                 <!-- Begin .nav-header -->
                 <div class="navbar-header">
@@ -10,15 +10,18 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<?php echo PATH_ADDRESS ?>"><?=$applicationName;?></a>
+                    <a class="navbar-brand" href="<?php echo PATH_ADDRESS ?>"><?=APPLICATION_NAME;?></a>
                 </div>
                 <!-- End .nav-header -->
                 <!-- Begin .nav-collapse -->
-                <div id="navbar" class="navbar-collapse collapse">
+                <nav class="navbar navbar-expand-sm bg-light navbar-light">
                     <ul class="nav navbar-nav">
-                        <li<?php if ($pageName == 'Contacts'):?> class="active"<?php endif;?>><a href="<?php echo PATH_ADDRESS ?>">Contacts</a></li>
+                        <li <?php echo (isset($pageName) && ($pageName == 'Contacts'))? 'class="active"' : '' ?>><a href="<?php echo PATH_ADDRESS ?>?action=contact">Contacts</a></li>
+                        <li <?php echo (isset($pageName) && ($pageName == 'Groups'))? 'class="active"' : '' ?>><a href="<?php echo PATH_ADDRESS ?>?action=group">Groups</a></li>
+                        <li <?php echo (isset($pageName) && ($pageName == 'Tags'))? 'class="active"' : '' ?>><a href="<?php echo PATH_ADDRESS ?>?action=tag">Tags</a></li>
+                        <li <?php echo (isset($pageName) && ($pageName == 'Cities'))? 'class="active"' : '' ?>><a href="<?php echo PATH_ADDRESS ?>?action=city">Cities</a></li>
                     </ul>
-                </div>
+                        </nav>
                 <!-- End .nav-collapse -->
             </div>
         </nav> 

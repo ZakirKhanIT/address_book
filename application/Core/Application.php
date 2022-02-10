@@ -23,6 +23,9 @@ class Application
             if ($methodAction == $path || $methodAction == '')
             {
                 break;
+            }else{
+                $controller='';
+                $action='';
             }
         }
 

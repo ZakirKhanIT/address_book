@@ -12,9 +12,28 @@ class Contact extends Model
         parent::__construct();
     }
 
-    public function getAllContacts()
+    public function getAllContacts( $searchByTags )
     {
-        $sql = 'SELECT contact.*,city.name FROM contact LEFT JOIN city ON contact.city_id = city.id';
+    
+        $child_query='';
+        if( $searchByTags){
+            $child_query=' HAVING';
+            $query_set =[];
+            foreach($searchByTags as $tags){
+                $query_set[]= ' FIND_IN_SET("'.$tags.'",d.tag_name) ';
+            }
+
+            $child_query .= implode(' OR ', $query_set );
+
+        }
+   
+       $sql = 'SELECT contact.*,city.name,c.group_name,d.tag_name FROM contact LEFT JOIN city ON contact.city_id = city.id 
+        LEFT JOIN ( SELECT contact_id,GROUP_CONCAT(`contact_in_group`.group_id) as group_name 
+        FROM contact_in_group GROUP BY contact_in_group.contact_id) AS c ON c.contact_id=contact.id 
+        LEFT JOIN ( SELECT contact_id,GROUP_CONCAT(`contact_in_tag`.tag_id) as tag_name 
+        FROM contact_in_tag GROUP BY contact_in_tag.contact_id) AS d ON d.contact_id=contact.id '.$child_query .'
+        order by contact.first_name';
+
         $statement = $this
             ->db
             ->prepare($sql);
@@ -23,9 +42,35 @@ class Contact extends Model
 
     }
 
+    public function getAllContactsById()
+    {
+        $sql = 'SELECT  id,CONCAT_WS(" ", `first_name`, `last_name`) AS `name` from contact';
+
+        $statement = $this
+            ->db
+            ->prepare($sql);
+        $statement->execute();
+        $sql = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $data=[];
+        foreach( $sql as $sql){
+            
+            $data += [$sql['id'] => $sql];
+        }
+    
+        return $data;
+
+    }
+
     public function getContactById($id)
     {
-        $sql = 'SELECT contact.*,city.name FROM contact LEFT JOIN city ON contact.city_id = city.id WHERE contact.id = ' . $id . '';
+        $sql = 'SELECT contact.*,city.name,c.group_name,d.tag_name FROM contact LEFT JOIN city ON contact.city_id = city.id 
+                LEFT JOIN ( SELECT contact_id,GROUP_CONCAT(`contact_in_group`.group_id) as group_name 
+                FROM contact_in_group GROUP BY contact_in_group.contact_id) AS c ON c.contact_id=contact.id 
+                LEFT JOIN ( SELECT contact_id,GROUP_CONCAT(`contact_in_tag`.tag_id) as tag_name 
+                FROM contact_in_tag GROUP BY contact_in_tag.contact_id) AS d ON d.contact_id=contact.id
+                WHERE contact.id = :id';
+
         $statement = $this
             ->db
             ->prepare($sql);

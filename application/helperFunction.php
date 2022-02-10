@@ -35,63 +35,62 @@ function exportData( $fileName, $format ){
 
 function errorMessages(){
     $error = [];
-    $error['info'] = 'Table will be auto created with dummy data while creating the database<br> for information adding the snippets of
-    query<br />
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Table name</th>
-                <th colspan=2>Query</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Contact</td>
-                <td>CREATE TABLE IF NOT EXISTS `contact` (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `first_name` varchar(255) NOT NULL,
-                    `last_name` varchar(255) NOT NULL,
-                    `zip_code` varchar(11) NOT NULL,
-                    `street` varchar(255) NOT NULL,
-                    `city_id` int(11) NOT NULL,
-                    `email_address` varchar(255) NOT NULL DEFAULT "",
-                    `created_date` timestamp NOT NULL DEFAULT current_timestamp(),
-                    `updated_date` timestamp NOT NULL DEFAULT current_timestamp(),
-                    PRIMARY KEY(`id`)
-                    ) </td>
-                <td>INSERT INTO contact(
-                    first_name,
-                    last_name,
-                    email_address,
-                    street,
-                    zip_code,
-                    city_id
-                    )
-                    VALUES
-                    ("Sam","Wallace","same@gmail.com","street 49","23456",1),
-                    ("Tom","Vetter","tom@gmail.com","street 49","23456",2),
-                    ("Mike","Graves","mike@gmail.com","street 49","23456",3),
-                    ("Zack","Rohe","zack@gmail.com","street 49","23456",4)</td>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>City</td>
-                <td>CREATE TABLE IF NOT EXISTS `city` (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `name` varchar(100) NOT NULL,
-                    `created_date` timestamp NOT NULL DEFAULT current_timestamp(),
-                    `updated_date` timestamp NOT NULL DEFAULT current_timestamp(),
-                    PRIMARY KEY(`id`)</td>
-                <td>INSERT INTO city(
-                    name
-                    )
-                    VALUES("Mumbai"),("Delhi"),("Bengluru"),("Chennai")</td>
-            </tr>
-    </table>
-    ';
     $error['dnf'] = 'Database is not created<br/>Please run this query <br/>CREATE DATABASE IF NOT EXISTS address_book DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci';
     return $error;
+}
+
+function getNameOfGroup( $string, $dataArray ){
+    if( !  $string){
+        echo ' No Data';
+        return;
+    }
+     $array =explode(',',$string);
+     $result = '<ol>';
+
+     foreach( $array as $array){
+        $result .= '<li>'.$dataArray[$array]['name'].'</li>';
+     }
+
+     $result .='</ol>';
+     echo $result;
+     
+}
+
+function getNameOfGroups( $string, $dataArray,$groups,$id ){
+ 
+    foreach($groups as $group){
+        $child_group=explode( ',',$group['child_group']);
+        if(in_array($id,$child_group)){
+            $string .=','.$group['contact'].',';
+        }
+    }
+
+    $array =explode(',',$string);
+   $array =  array_unique($array);
+
+    $result = '<ol>';
+
+    foreach( $array as $array){
+        if(isset($dataArray[$array]) )
+        $result .= '<li>'.$dataArray[$array]['name'].'</li>';;
+    }
+
+    $result .='</ol>';
+    echo $result;
+     
+}
+
+ function getPostData( $posts ){
+    $data_to_save =[];
+
+    if($posts ){
+        foreach( $posts as $post){
+            if(! array_search($post, $posts ) ){
+                continue;
+            }
+            $data_to_save[array_search($post, $posts )]=isset($post) ? $post : NULL;
+        }
+    }
+
+    return $data_to_save;
 }

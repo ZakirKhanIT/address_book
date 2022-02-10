@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<address_book>
+  <contact_info>
+    <id>8</id>
+    <name>get</name>
+    <created_date>2022-02-10 19:34:51</created_date>
+    <updated_date>2022-02-10 19:34:51</updated_date>
+  </contact_info>
+  <contact_info>
+    <id>6</id>
+    <name>happy</name>
+    <created_date>2022-02-10 19:34:43</created_date>
+    <updated_date>2022-02-10 19:34:43</updated_date>
+  </contact_info>
+  <contact_info>
+    <id>7</id>
+    <name>hour</name>
+    <created_date>2022-02-10 19:34:48</created_date>
+    <updated_date>2022-02-10 19:34:48</updated_date>
+  </contact_info>
+</address_book>

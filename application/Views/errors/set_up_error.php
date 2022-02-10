@@ -6,11 +6,6 @@
           print_r(errorMessages()['dnf']);
         ?>
     </div>
-    <div class="alert alert-info" role="info">
-        <?php 
-          echo errorMessages()['info'];
-        ?>
-    </div>
 </div>
 <!--End content-->
 <?php include_once PATH_VIEWS . 'includes/footer.php'; ?>

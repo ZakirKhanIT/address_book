@@ -3,14 +3,7 @@
 namespace Core;
 
 class View 
-{
-    private $attributes = [];
-    
-    public function setAttribute($name, $value)
-    {
-        $this->attributes[$name] = $value;    
-    }
-    
+{ 
     public function redirect($value='')
     {
         if ($value != null)
@@ -19,12 +12,13 @@ class View
         }
     }
     
-    public function render($template) 
+    public function render($template , $data ) 
     {
-        if (!is_null($this->attributes)) 
+        if (!is_null($data)) 
         {
-            extract($this->attributes);
-        }        
+            extract( $data );
+        }       
+
         
         $file = PATH_VIEWS . $template . '.php';
         if (file_exists($file))

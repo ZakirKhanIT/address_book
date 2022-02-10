@@ -17,13 +17,13 @@ class Database
         }
         catch (\PDOException $err) {
             if( 1049 === $err->getCode()){
-                include_once PATH_VIEWS . 'errors/set_up_error.php';
                 $error_type = 'dnf';
+                include_once PATH_VIEWS . 'errors/set_up_error.php';
            }
             exit;
          }
 
-         $this->setup();
+         $this->setUp();
 
     }
     
@@ -32,82 +32,20 @@ class Database
         return $this->connection;
     }
 
-    public function getAllTables()
-    {
-        $sql = 'SHOW TABLES IN '.DB_NAME.'';
-        $statement = $this->connection->prepare($sql);
-        if( $statement->execute() ){
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
-        }
-        return;
-
-    }
-
     public function setUp()
     {
-        $tableList = $this->getAllTables();
-        $key = array_search('contact', array_column($tableList, 'Tables_in_'.DB_NAME.''));
-        if(! is_numeric($key) ){
-        $sql = "CREATE TABLE IF NOT EXISTS `contact` (
-            `id` int(11) NOT NULL AUTO_INCREMENT,
-            `first_name` varchar(255) NOT NULL,
-            `last_name` varchar(255) NOT NULL,
-            `zip_code` varchar(11) NOT NULL,
-            `street` varchar(255) NOT NULL,
-            `city_id` int(11) NOT NULL,
-            `email_address` varchar(255) NOT NULL DEFAULT '',
-            `created_date` timestamp NOT NULL DEFAULT current_timestamp(),
-            `updated_date` timestamp NOT NULL DEFAULT current_timestamp(),
-            PRIMARY KEY(`id`)
-            ) ";
-        if ($this
+       $sql = 'SHOW TABLES FROM '.DB_NAME.'';
+        $statement = $this
             ->connection
-            ->query($sql))
-        {
-          $sql = 'INSERT INTO contact(
-                    first_name,
-            last_name,
-            email_address,
-            street, 
-            zip_code, 
-            city_id 
-                    ) 
-                    VALUES
-                    ("Sam","Wallace","same@gmail.com","street 49","23456",1),
-                    ("Tom","Vetter","tom@gmail.com","street 49","23456",2),
-                    ("Mike","Graves","mike@gmail.com","street 49","23456",3),
-                    ("Zack","Rohe","zack@gmail.com","street 49","23456",4)';
-            $this
-                ->connection
-                ->query($sql);
+            ->query($sql);
+        $statement->execute();
+        $response = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+        if( ! $response ){
+            $sqlFileToExecute = ROOT_PATH .'setup/csv/address_book.sql';
+            include_once ROOT_PATH . 'setup/setup.php';
         }
+        return;
     }
 
-     $key = array_search('city', array_column($tableList, 'Tables_in_'.DB_NAME.''));
-    if( ! is_numeric($key) ){
-        $sql = " CREATE TABLE IF NOT EXISTS `city` (
-                `id` int(11) NOT NULL AUTO_INCREMENT,
-                `name` varchar(100) NOT NULL,
-                `created_date` timestamp NOT NULL DEFAULT current_timestamp(),
-                `updated_date` timestamp NOT NULL DEFAULT current_timestamp(),
-                PRIMARY KEY(`id`)
-              ) ";
-
-        if ($this
-            ->connection
-            ->query($sql))
-        {
-            $sql = 'INSERT INTO city(
-                        name
-                        ) 
-                        VALUES("Mumbai"),("Delhi"),("Bengluru"),("Chennai")';
-            $this
-                ->connection
-                ->query($sql);
-
-        }
-
-    }
-}
 }

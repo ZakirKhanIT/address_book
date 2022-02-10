@@ -3,83 +3,92 @@ namespace Controller;
 
 use Core\View;
 use Model\Contact;
+use Model\Group;
 use Model\City;
+use Model\ContactInGroup;
+use Model\Tag;
+use Model\ContactInTag;
 
 class ContactController
 {
     private $model;
     private $view;
     private $city;
+    private $data = [];
 
     public function __construct()
     {
         $this->model = new Contact();
+        $this->group = new Group();
         $this->city = new City();
+        $this->contactInGroup = new ContactInGroup();
+        $this->tag = new Tag();
+        $this->contactInTag = new ContactInTag();
         $this->view = new View();
+
+        $this->data['pageName'] = 'Contacts';
     }
 
-    public function index()
+    public function index( $tagSearch )
     {
-        $data['contacts'] = $this
+        $this->data['contacts'] = $this
             ->model
-            ->getAllContacts();
-        $data['city'] = $this
+            ->getAllContacts( $tagSearch );
+
+        $this->data['city'] = $this
             ->city
             ->getAllCity();
+
+        $this->data['groups'] = $this
+            ->group
+            ->getAllGroupsById();
+
+        $this->data['tags'] = $this
+            ->tag
+            ->getAllTagsById(); 
+
+        $this->data['allTags'] = $this
+            ->tag
+            ->getAllTags();  
+    
         $this
             ->view
-            ->setAttribute('applicationName', APPLICATION_NAME);
-        $this
-            ->view
-            ->setAttribute('pageName', 'Contacts');
-        $this
-            ->view
-            ->setAttribute('contacts', $data['contacts']);
-        $this
-            ->view
-            ->setAttribute('city', $data['city']);
-        $this
-            ->view
-            ->render('contact/index');
+            ->render('contact/index',$this->data);
     }
 
     public function add()
     {
         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET')
         {
-            $this
-                ->view
-                ->setAttribute('applicationName', APPLICATION_NAME);
-            $data['city'] = $this
+            $this->data['city'] = $this
                 ->city
-                ->getAllCity();
+                ->getAllCity();   
+
+            $this->data['groups'] = $this
+                ->group
+                ->getAllGroups(); 
+
+            $this->data['tags'] = $this
+                ->tag
+                ->getAllTags();   
+
             $this
                 ->view
-                ->setAttribute('pageName', 'Contacts');
-            $this
-                ->view
-                ->setAttribute('city', $data['city']);
-            $this
-                ->view
-                ->render('contact/add');
+                ->render('contact/add',$this->data);
             return;
         }
 
         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
         {
-            $firstName = isset($_POST['firstName']) ? $_POST['firstName'] : NULL;
-            $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : NULL;
-            $emailAddress = isset($_POST['emailAddress']) ? $_POST['emailAddress'] : NULL;
-            $street = isset($_POST['street']) ? $_POST['street'] : NULL;
-            $zipCode = isset($_POST['zipCode']) ? $_POST['zipCode'] : NULL;
-            $cityID = isset($_POST['cityID']) ? $_POST['cityID'] : NULL;
+            $data=getPostData($_POST);
 
-            $data = ['firstName' => $firstName, 'lastName' => $lastName, 'emailAddress' => $emailAddress, 'street' => $street, 'zipCode' => $zipCode, 'cityID' => $cityID];
-
-            if ($this
+            $id = $this
                 ->model
-                ->addContact($data) >= 1)
+                ->addContact($data);
+            if ($id >= 1)
             {
+                $this->contactInGroup->add(['id'=>$id,'groupID' => $data['groupID'] ]);
+                $this->contactInTag->add(['id'=>$id,'tagID' => $data['tagID'] ]);
                 $this
                     ->view
                     ->redirect(PATH_ADDRESS);
@@ -92,80 +101,42 @@ class ContactController
             ->redirect($_SERVER['REQUEST_URI']);
     }
 
-    public function view($id)
-    {
-        $data['contact'] = $this
-            ->model
-            ->getContactById($id);
-        $data['city'] = $this
-            ->city
-            ->getAllCity();
-        $this
-            ->view
-            ->setAttribute('applicationName', APPLICATION_NAME);
-        $this
-            ->view
-            ->setAttribute('pageName', 'Contacts');
-        $this
-            ->view
-            ->setAttribute('contact', $data['contact']);
-        $this
-            ->view
-            ->setAttribute('city', $data['city']);
-        $this
-            ->view
-            ->render('contact/view');
-    }
-
     public function edit($id = '')
     {
         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && $id !== '')
         {
-            $data['contacts'] = $this
+            $this->data['contact'] = $this
                 ->model
                 ->getContactById($id);
-            $data['city'] = $this
+            $this->data['city'] = $this
                 ->city
                 ->getAllCity();
+            $this->data['groups'] = $this
+                ->group
+                ->getAllGroups(); 
+            $this->data['tags'] = $this
+                ->tag
+                ->getAllTags();    
+
             $this
                 ->view
-                ->setAttribute('applicationName', APPLICATION_NAME);
-            $this
-                ->view
-                ->setAttribute('pageName', 'Contacts');
-            $this
-                ->view
-                ->setAttribute('contact', $data['contacts']);
-            $this
-                ->view
-                ->setAttribute('city', $data['city']);
-            $this
-                ->view
-                ->render('contact/edit');
+                ->render('contact/edit',$this->data);
             return;
         }
 
         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
         {
-            $id = isset($_POST['id']) ? $_POST['id'] : NULL;
-            $firstName = isset($_POST['firstName']) ? $_POST['firstName'] : NULL;
-            $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : NULL;
-            $emailAddress = isset($_POST['emailAddress']) ? $_POST['emailAddress'] : NULL;
-            $street = isset($_POST['street']) ? $_POST['street'] : NULL;
-            $zipCode = isset($_POST['zipCode']) ? $_POST['zipCode'] : NULL;
-            $cityID = isset($_POST['cityID']) ? $_POST['cityID'] : NULL;
-
-            $data = ['id' => $id, 'firstName' => $firstName, 'lastName' => $lastName, 'emailAddress' => $emailAddress, 'street' => $street, 'zipCode' => $zipCode, 'cityID' => $cityID];
-
-            if ($this
+            $data=getPostData($_POST);
+              $updated = $this
                 ->model
-                ->updateContact($data) >= 1)
-            {
+                ->updateContact($data);
+ 
+                $this->contactInGroup->update(['id'=> $data['id'],'groupID' => $data['groupID'] ]);
+                $this->contactInTag->update(['id'=> $data['id'],'tagID' => $data['tagID'] ]);
                 $this
                     ->view
                     ->redirect(PATH_ADDRESS);
                 return;
-            }
         }
 
         $this
@@ -220,4 +191,15 @@ class ContactController
         $xml->save('./assets/files/' . $all_contacts_xml);
         exportData('./assets/files/' . $all_contacts_xml, 'xml');
     }
+
+    public function search()
+    {
+        if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $tagID = isset($_POST['tagID']) ? $_POST['tagID'] : NULL;
+            $this->index( $tagID );
+        }
+        return;
+    }
+
 }

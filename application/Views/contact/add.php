@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label for="name" class="col-sm-2 control-label">Last Name</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="LastName" name="lastName" required>
+                        <input type="text" class="form-control" id="LastName" name="lastName" >
                     </div>
                 </div>
                 <div class="form-group">
@@ -39,7 +39,8 @@
                 <div class="form-group">
                     <label for="city" class="col-sm-2 control-label">City</label>
                     <div class="col-sm-10">
-                        <select class="form-control" id="cityID" name="cityID" required>
+                        <select class="selectpicker" id="cityID" name="cityID" required>
+                        <option >Select City</option>
                             <?php foreach($city as $city) { ?>
                             <option value="<?php echo $city['id'];  ?>"><?php echo $city['name'];  ?> </option>
                             <?php } ?>
@@ -47,8 +48,28 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="city" class="col-sm-2 control-label">Group</label>
+                    <div class="col-sm-10">
+                        <select class="selectpicker" id="groupID" name="groupID[]"   multiple data-live-search="true">
+                            <?php foreach($groups as $group) { ?>
+                            <option value="<?php echo $group['id'];  ?>"><?php echo $group['name'];  ?> </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="city" class="col-sm-2 control-label">Tags</label>
+                    <div class="col-sm-10">
+                        <select class="selectpicker" id="tagID" name="tagID[]"   multiple data-live-search="true">
+                            <?php foreach($tags as $tag) { ?>
+                            <option value="<?php echo $tag['id'];  ?>"><?php echo $tag['name'];  ?> </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <a href="/contact" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"
+                        <a href="<?php echo PATH_ADDRESS ?>?action=contact" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"
                                 aria-hidden="true"></span></a>
                         <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk"
                                 aria-hidden="true"></span></button>

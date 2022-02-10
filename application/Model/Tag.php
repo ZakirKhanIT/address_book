@@ -1,31 +1,35 @@
 <?php
-
 namespace Model;
 
 use Core\Model;
 use \PDO;
 
-class City extends Model
+class Tag extends Model
 {
-    public $table_name = 'city';
-        
+    public $table_name = 'tags';
+
     public function __construct()
     {
         parent::__construct();
     }
-    
-    public function getAllCity()
+
+    public function getAllTags()
     {
-        $sql = 'SELECT * FROM '.$this->table_name.'';
-        $statement = $this->db->query($sql);
+        $sql = 'SELECT * from '.$this->table_name.' 
+        order by name';
+
+        $statement = $this
+            ->db
+            ->query($sql);
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_ASSOC);
+
     }
 
-    public function getAllCitiesById()
+    public function getAllTagsById()
     {
         $data=[];
-        $sql = $this->getAllCities();
+        $sql = $this->getAllTags();
         foreach( $sql as $sql){
             
             $data += [$sql['id'] => $sql];
@@ -38,7 +42,7 @@ class City extends Model
     public function add($data)
     {
         try{
-        $sql = 'INSERT INTO '.$this->table_name.' (
+        $sql = 'INSERT INTO `tags` (
             name
             ) 
             VALUES(
@@ -48,7 +52,7 @@ class City extends Model
         $statement = $this
             ->db
             ->prepare($sql);
-        $statement->execute([':name' => $data['cityName']]);
+        $statement->execute([':name' => $data['tagName']]);
 
 
         return $this
@@ -61,9 +65,9 @@ class City extends Model
          }
     }
 
-    public function getCitiesById($id)
+    public function getTagsById($id)
     {
-        $sql = 'SELECT * from  '.$this->table_name.'
+        $sql = 'SELECT * from  tags
         WHERE id = :id';
         $statement = $this
             ->db
@@ -75,7 +79,7 @@ class City extends Model
 
     public function update($data)
     {
-        $sql = 'UPDATE '.$this->table_name.' 
+        $sql = 'UPDATE `tags` 
                 SET 
                 name = :name
                 WHERE id = :id';
@@ -84,14 +88,14 @@ class City extends Model
             ->db
             ->prepare($sql);
 
-        $statement->execute([':name' => $data['cityName'], ':id' => $data['id']]);
+        $statement->execute([':name' => $data['tagName'], ':id' => $data['id']]);
 
         return $statement->rowCount();
     }
 
     public function delete($id)
     {
-        $sql = 'DELETE FROM '.$this->table_name.' WHERE id = :id';
+        $sql = 'DELETE FROM `tags` WHERE id = :id';
         $statement = $this
             ->db
             ->prepare($sql);
@@ -99,5 +103,6 @@ class City extends Model
         return $statement->rowCount();
 
     }
-    
+
 }
+
