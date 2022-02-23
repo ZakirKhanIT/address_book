@@ -1,7 +1,6 @@
 <?php
-
-error_reporting(0);
-ini_set('display_errors', 0);
+/*error_reporting(0);
+ini_set('display_errors', 0);*/
 
 define('APPLICATION_NAME', 'Address Book');
 
@@ -9,7 +8,8 @@ $configs = [
     'path' => [
         'PATH_APPLICATION' => __DIR__ . '/../application/',
         'PATH_VIEWS' => __DIR__ . '/../application/Views/',
-        'PATH_ADDRESS' => 'http://localhost/address-book',
+        'PATH_ADDRESS' => 'http://localhost/address_book',
+        'ROOT_PATH' => __DIR__ . '/../',
     ],
 
     'address' => [
